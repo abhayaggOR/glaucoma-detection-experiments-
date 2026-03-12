@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>YOLO11 Glaucoma Classification — Training Report (Full Dataset)</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #222;
+      line-height: 1.6;
+      font-size: 11pt;
+    }
+
+    h1 {
+      font-size: 20pt;
+      border-bottom: 2px solid #333;
+      padding-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 16pt;
+      border-bottom: 1px solid #999;
+      padding-bottom: 4px;
+      margin-top: 32px;
+    }
+
+    h3 {
+      font-size: 13pt;
+      margin-top: 24px;
+    }
+
+    h4 {
+      font-size: 11pt;
+      margin-top: 16px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 12px 0 20px 0;
+      font-size: 10pt;
+    }
+
+    th,
+    td {
+      border: 1px solid #999;
+      padding: 6px 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #e8e8e8;
+      font-weight: bold;
+    }
+
+    td:first-child,
+    th:first-child {
+      text-align: left;
+    }
+
+    .note,
+    .warning,
+    .tip,
+    .important {
+      border-left: 4px solid;
+      padding: 10px 14px;
+      margin: 14px 0;
+      background-color: #f7f7f7;
+      font-size: 10pt;
+    }
+
+    .note {
+      border-color: #4a90d9;
+    }
+
+    .warning {
+      border-color: #e6a700;
+    }
+
+    .tip {
+      border-color: #2ea44f;
+    }
+
+    .important {
+      border-color: #d73a49;
+    }
+
+    .note strong,
+    .warning strong,
+    .tip strong,
+    .important strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    pre {
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 10pt;
+      overflow-x: auto;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 30px 0;
+    }
+
+    ul {
+      margin: 8px 0;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>YOLO11 Glaucoma Classification — Training Report (Full Dataset)</h1>
+
+  <!-- ============================================================ -->
+  <h2>1. Objective</h2>
+
+  <p>Binary classification of fundus images into <strong>NORMAL</strong> vs <strong>GLAUCOMA SUSPECT</strong> using
+    YOLO11 classification models, trained on the Chaksu dataset with images from <strong>all three fundus
+      cameras</strong> — Remidio, Bosch, and Forus.</p>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>2. Dataset Overview</h2>
+
+  <h3>2.1 Source — Chaksu Dataset (ID: 20123135)</h3>
+
+  <p>Data was collected from <strong>three fundus camera systems</strong>. Each image was labelled by <strong>5 expert
+      ophthalmologists</strong>, and the final ground truth was determined by <strong>majority voting</strong> (≥ 3 out
+    of 5 experts agree).</p>
+
+  <table>
+    <tr>
+      <th>Camera</th>
+      <th>CSV File</th>
+      <th>Images in CSV</th>
+      <th>Matched on Disk</th>
+      <th>NORMAL</th>
+      <th>GLAUCOMA SUSPECT</th>
+      <th>Glaucoma %</th>
+    </tr>
+    <tr>
+      <td><strong>Remidio</strong></td>
+      <td>remidio_images_updated.csv</td>
+      <td>810</td>
+      <td><strong>810</strong></td>
+      <td>708</td>
+      <td>102</td>
+      <td>12.6 %</td>
+    </tr>
+    <tr>
+      <td><strong>Bosch</strong></td>
+      <td>bosch_data.csv</td>
+      <td>104</td>
+      <td><strong>103</strong></td>
+      <td>84</td>
+      <td>19</td>
+      <td>18.4 %</td>
+    </tr>
+    <tr>
+      <td><strong>Forus</strong></td>
+      <td>forus_data.csv</td>
+      <td>95</td>
+      <td><strong>95</strong></td>
+      <td>79</td>
+      <td>16</td>
+      <td>16.8 %</td>
+    </tr>
+    <tr style="font-weight:bold;">
+      <td>Total</td>
+      <td>—</td>
+      <td>1,009</td>
+      <td>1,008</td>
+      <td>871</td>
+      <td>137</td>
+      <td>13.6 %</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>📝 Note:</strong>
+    The <strong>full dataset of 1,008 images</strong> from all three cameras is used. Only 1 Bosch image (Image172.JPG)
+    was missing from disk.
+  </div>
+
+  <h3>2.2 Class Imbalance</h3>
+
+  <p>The dataset is <strong>heavily imbalanced</strong> — approximately <strong>86.4 % NORMAL</strong> and <strong>13.6
+      % GLAUCOMA SUSPECT</strong>.</p>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>3. Data Preparation Pipeline</h2>
+
+  <p>Implemented in <strong>retrain_fulldata.py</strong>.</p>
+
+  <h3>3.1 Steps</h3>
+
+  <ol>
+    <li><strong>CSV Loading</strong> — All three camera CSVs loaded and merged using <code>pd.concat</code></li>
+    <li><strong>Image Path Resolution</strong> — Image filenames mapped to actual file paths under
+      <code>1.0_Original_Fundus_Images/{Camera}/</code></li>
+    <li><strong>Existence Filtering</strong> — Only images physically present on disk were retained → <strong>1,008
+        usable images</strong></li>
+    <li><strong>Label Cleaning</strong> — <code>Majority Decision</code> column used as-is (NORMAL / GLAUCOMA SUSPECT),
+      spaces replaced with underscores for folder names</li>
+    <li><strong>Stratified Train/Test Split</strong> — Using <code>sklearn.model_selection.train_test_split</code></li>
+    <li><strong>YOLO Folder Structure</strong> — Images copied into YOLO classification directory format</li>
+  </ol>
+
+  <h3>3.2 Train / Test Split</h3>
+
+  <table>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>Split Ratio</td>
+      <td><strong>80 / 20</strong> (Train / Test)</td>
+    </tr>
+    <tr>
+      <td>Stratification</td>
+      <td>Yes — by Majority Decision</td>
+    </tr>
+    <tr>
+      <td>Random Seed</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <td><strong>Train Images</strong></td>
+      <td><strong>806</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Test Images</strong></td>
+      <td><strong>202</strong></td>
+    </tr>
+  </table>
+
+  <h4>Per-Class Breakdown</h4>
+
+  <table>
+    <tr>
+      <th>Class</th>
+      <th>Train</th>
+      <th>Test</th>
+      <th>Total</th>
+    </tr>
+    <tr>
+      <td>NORMAL</td>
+      <td>696</td>
+      <td>175</td>
+      <td>871</td>
+    </tr>
+    <tr>
+      <td>GLAUCOMA SUSPECT</td>
+      <td>110</td>
+      <td>27</td>
+      <td>137</td>
+    </tr>
+    <tr style="font-weight:bold;">
+      <td>Total</td>
+      <td>806</td>
+      <td>202</td>
+      <td>1,008</td>
+    </tr>
+  </table>
+
+  <h3>3.3 Output Directory Structure</h3>
+
+  <pre>
+/home/abhay/yolo_glaucoma_cls/
+├── train/
+│   ├── NORMAL/          (696 images)
+│   └── GLAUCOMA_SUSPECT/ (110 images)
+└── test/
+    ├── NORMAL/          (175 images)
+    └── GLAUCOMA_SUSPECT/ (27 images)
+</pre>
+
+  <div class="note">
+    <strong>📝 Note:</strong>
+    No separate validation split was created. The test set was used for validation during training (Ultralytics
+    auto-fallback: <code>split=val</code> not found → used <code>split=test</code>).
+  </div>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>4. Training Configuration</h2>
+
+  <p>Two models were trained — <strong>YOLO11s-cls</strong> (Small) and <strong>YOLO11l-cls</strong> (Large).</p>
+
+  <h3>4.1 Common Hyperparameters</h3>
+
+  <table>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>Framework</td>
+      <td>Ultralytics 8.4.11</td>
+    </tr>
+    <tr>
+      <td>Task</td>
+      <td>Classification (classify)</td>
+    </tr>
+    <tr>
+      <td>Image Size</td>
+      <td><strong>1024 × 1024</strong></td>
+    </tr>
+    <tr>
+      <td>Rect Mode</td>
+      <td>True (preserve aspect ratio)</td>
+    </tr>
+    <tr>
+      <td>Batch Size</td>
+      <td><strong>1</strong></td>
+    </tr>
+    <tr>
+      <td>Epochs</td>
+      <td><strong>50</strong></td>
+    </tr>
+    <tr>
+      <td>Optimizer</td>
+      <td><strong>AdamW</strong> (auto-selected)</td>
+    </tr>
+    <tr>
+      <td>Learning Rate</td>
+      <td>0.001667 (auto)</td>
+    </tr>
+    <tr>
+      <td>Momentum</td>
+      <td>0.9</td>
+    </tr>
+    <tr>
+      <td>Weight Decay</td>
+      <td>0.0005</td>
+    </tr>
+    <tr>
+      <td>AMP</td>
+      <td>Enabled (Mixed Precision)</td>
+    </tr>
+    <tr>
+      <td>Pretrained</td>
+      <td><strong>Yes</strong> (ImageNet weights)</td>
+    </tr>
+    <tr>
+      <td>Augmentation</td>
+      <td>RandAugment, HSV jitter, horizontal flip, erasing (0.4), scale (0.5)</td>
+    </tr>
+    <tr>
+      <td>Early Stopping</td>
+      <td>Patience = 100 (not triggered)</td>
+    </tr>
+    <tr>
+      <td>Device</td>
+      <td><strong>NVIDIA RTX 2000 Ada Generation</strong> (16 GB VRAM)</td>
+    </tr>
+    <tr>
+      <td>Workers</td>
+      <td>0 (YOLO11s), 8 (YOLO11l)</td>
+    </tr>
+    <tr>
+      <td>Seed</td>
+      <td>0 (deterministic)</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>📝 Note:</strong>
+    Multiple Bosch camera JPEGs were flagged as corrupt during loading but were <strong>automatically restored and
+      saved</strong> by Ultralytics. YOLO11s used <code>workers=0</code> to avoid a data-loader crash caused by a PNG
+    read error during multi-process loading.
+  </div>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>5. Model Architectures</h2>
+
+  <table>
+    <tr>
+      <th>Spec</th>
+      <th>YOLO11s-cls (Small)</th>
+      <th>YOLO11l-cls (Large)</th>
+    </tr>
+    <tr>
+      <td>Layers</td>
+      <td>86 (47 fused)</td>
+      <td>176 (94 fused)</td>
+    </tr>
+    <tr>
+      <td>Parameters</td>
+      <td><strong>5.45 M</strong></td>
+      <td><strong>12.84 M</strong></td>
+    </tr>
+    <tr>
+      <td>GFLOPs</td>
+      <td>12.1</td>
+      <td>49.8</td>
+    </tr>
+    <tr>
+      <td>Model Weight Size</td>
+      <td>11.0 MB</td>
+      <td>25.9 MB</td>
+    </tr>
+    <tr>
+      <td>Pretrained Transfer</td>
+      <td>234/236 items</td>
+      <td>492/494 items</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>6. Results</h2>
+
+  <h3>6.1 Final Best-Model Metrics</h3>
+
+  <table>
+    <tr>
+      <th>Metric</th>
+      <th>YOLO11s-cls (Small)</th>
+      <th>YOLO11l-cls (Large)</th>
+    </tr>
+    <tr>
+      <td><strong>Top-1 Accuracy</strong></td>
+      <td><strong>86.63 %</strong></td>
+      <td><strong>87.13 %</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Top-5 Accuracy</strong></td>
+      <td><strong>100.0 %</strong></td>
+      <td><strong>100.0 %</strong></td>
+    </tr>
+    <tr>
+      <td>Best Epoch</td>
+      <td>All epochs (constant)</td>
+      <td>Epoch 3</td>
+    </tr>
+    <tr>
+      <td>Training Time</td>
+      <td>~1.64 hrs (50 epochs)</td>
+      <td>~0.56 hrs (50 epochs)</td>
+    </tr>
+  </table>
+
+  <div class="warning">
+    <strong>⚠️ Warning:</strong>
+    <strong>Both models show signs of predicting mostly the NORMAL class.</strong> The YOLO11s accuracy is
+    <strong>exactly 86.63%</strong> (= 175/202, the proportion of NORMAL in the test set) across every single epoch,
+    indicating it is learning only the majority class baseline. YOLO11l briefly exceeded this at epoch 3 (87.13%) but
+    then became extremely unstable with val/loss going to NaN and accuracy dropping to random levels (17–86%).
+  </div>
+
+  <h3>6.2 Inference Speed (per image)</h3>
+
+  <table>
+    <tr>
+      <th>Stage</th>
+      <th>YOLO11s-cls</th>
+      <th>YOLO11l-cls</th>
+    </tr>
+    <tr>
+      <td>Preprocess</td>
+      <td>1.4 ms</td>
+      <td>~1.3 ms</td>
+    </tr>
+    <tr>
+      <td><strong>Inference</strong></td>
+      <td><strong>6.1 ms</strong></td>
+      <td><strong>13.0 ms</strong></td>
+    </tr>
+    <tr>
+      <td>Postprocess</td>
+      <td>~0.006 ms</td>
+      <td>~0.006 ms</td>
+    </tr>
+  </table>
+
+  <h3>6.3 Training Loss Progression</h3>
+
+  <table>
+    <tr>
+      <th>Epoch</th>
+      <th>YOLO11s Train Loss</th>
+      <th>YOLO11l Train Loss</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.436</td>
+      <td>0.441</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.407</td>
+      <td>0.401</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>0.410</td>
+      <td>0.407</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>0.397</td>
+      <td>0.394</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>0.400</td>
+      <td>0.391</td>
+    </tr>
+  </table>
+
+  <h3>6.4 Validation Accuracy Across Epochs (Key Observations)</h3>
+
+  <p><strong>YOLO11s-cls:</strong></p>
+  <ul>
+    <li>Accuracy was <strong>constant at 86.63%</strong> across all 50 epochs</li>
+    <li>Validation loss gradually decreased from 0.567 → 0.410 but accuracy never changed</li>
+    <li>The model is <strong>stuck predicting the majority class</strong> (NORMAL) for all inputs</li>
+  </ul>
+
+  <p><strong>YOLO11l-cls:</strong></p>
+  <ul>
+    <li>Peaked at <strong>87.13%</strong> at epoch 3 (slightly above baseline)</li>
+    <li>Then became <strong>extremely unstable</strong>: accuracy dropped to 17–25% from epochs 16–29</li>
+    <li>Validation loss went to <strong>NaN</strong> from epoch 8 onwards (persistent numerical instability)</li>
+    <li>Occasionally recovered to 86.6% but never consistently</li>
+  </ul>
+
+  <h3>6.5 Training Curves</h3>
+
+  <p><em>[See attached images: YOLO11s-cls and YOLO11l-cls Training Curves — Full Dataset, Runs1]</em></p>
+
+  <h3>6.6 Confusion Matrices (Normalized)</h3>
+
+  <p><em>[See attached images: YOLO11s-cls and YOLO11l-cls Confusion Matrices — Full Dataset, Runs1]</em></p>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>7. Runs2 — Retrained with Tuned Hyperparameters (epochs=300, batch size=16, imgsz=512)</h2>
+
+  <h3>7.1 What Changed (Runs1 → Runs2)</h3>
+
+  <p>The first run (Runs1) showed both models were either stuck at the majority-class baseline or numerically unstable.
+    The key hypothesis was that <strong>batch size = 1 with 1024px images produced noisy gradients</strong> and
+    prevented learning. A second training run (<strong>Runs2</strong>) was conducted with the following changes:</p>
+
+  <table>
+    <tr>
+      <th>Parameter</th>
+      <th>Runs1 (Previous)</th>
+      <th>Runs2 (Latest)</th>
+      <th>Rationale</th>
+    </tr>
+    <tr>
+      <td><strong>Epochs</strong></td>
+      <td>50</td>
+      <td><strong>300</strong></td>
+      <td>Allow more time for convergence</td>
+    </tr>
+    <tr>
+      <td><strong>Image Size</strong></td>
+      <td>1024 × 1024</td>
+      <td><strong>512 × 512</strong></td>
+      <td>Reduce memory per sample</td>
+    </tr>
+    <tr>
+      <td><strong>Batch Size</strong></td>
+      <td>1</td>
+      <td><strong>16</strong></td>
+      <td>Smoother gradients, better class statistics per batch</td>
+    </tr>
+    <tr>
+      <td>Training Script</td>
+      <td>retrain_fulldata.py</td>
+      <td>retrain_fulldata_v2.py</td>
+      <td>—</td>
+    </tr>
+  </table>
+
+  <div class="important">
+    <strong>❗ Important:</strong>
+    The dataset (1,008 images, 80/20 stratified split, seed=42) was <strong>identical</strong> to Runs1. Only the
+    training hyperparameters changed.
+  </div>
+
+  <h3>7.2 Runs2 — Final Best-Model Metrics</h3>
+
+  <table>
+    <tr>
+      <th>Metric</th>
+      <th>YOLO11s-cls (Small)</th>
+      <th>YOLO11l-cls (Large)</th>
+    </tr>
+    <tr>
+      <td><strong>Top-1 Accuracy</strong></td>
+      <td><strong>93.07 %</strong></td>
+      <td><strong>86.63 %</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Top-5 Accuracy</strong></td>
+      <td><strong>100.0 %</strong></td>
+      <td><strong>100.0 %</strong></td>
+    </tr>
+    <tr>
+      <td>Best Epoch</td>
+      <td>~185–285 (multiple peaks)</td>
+      <td>All epochs (constant)</td>
+    </tr>
+    <tr>
+      <td>Epochs Completed</td>
+      <td>285 (early-stopped, patience=100)</td>
+      <td>101 (early-stopped, patience=100)</td>
+    </tr>
+    <tr>
+      <td>Training Time</td>
+      <td>~5.81 hrs</td>
+      <td>~2.05 hrs</td>
+    </tr>
+  </table>
+
+  <h3>7.3 YOLO11s-cls (Small) — Detailed Observations</h3>
+
+  <ul>
+    <li><strong>Major improvement</strong>: Accuracy broke out of the 86.63% majority-class baseline starting around
+      <strong>epoch 55</strong>, reaching <strong>88.6%</strong></li>
+    <li>Continued climbing through training: <strong>90.6%</strong> by epoch 90, <strong>91.1%</strong> by epoch 126,
+      <strong>92.6%</strong> by epoch 176, and peaked at <strong>93.07%</strong> at epochs 185, 192, 200, 210, 216, 241,
+      246–249, 262, 269, and 283</li>
+    <li>Training loss dropped steadily from <strong>0.49 → 0.15</strong> (vs 0.44 → 0.40 in Runs1), showing genuine
+      feature learning</li>
+    <li>Validation loss decreased from <strong>0.87 → 0.25</strong> on average, though with some oscillation</li>
+    <li>The model successfully learned to <strong>distinguish GLAUCOMA SUSPECT from NORMAL</strong> — unlike Runs1 where
+      it predicted only the majority class</li>
+  </ul>
+
+  <h4>Training Loss Progression (YOLO11s-cls)</h4>
+
+  <table>
+    <tr>
+      <th>Epoch</th>
+      <th>Train Loss</th>
+      <th>Val Accuracy</th>
+      <th>Val Loss</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.490</td>
+      <td>86.63 %</td>
+      <td>0.872</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>0.385</td>
+      <td>86.63 %</td>
+      <td>0.318</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td>0.321</td>
+      <td>87.13 %</td>
+      <td>0.300</td>
+    </tr>
+    <tr>
+      <td>150</td>
+      <td>0.313</td>
+      <td>89.11 %</td>
+      <td>0.275</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td>0.252</td>
+      <td>93.07 %</td>
+      <td>0.269</td>
+    </tr>
+    <tr>
+      <td>250</td>
+      <td>0.180</td>
+      <td>92.08 %</td>
+      <td>0.230</td>
+    </tr>
+    <tr>
+      <td>285</td>
+      <td>0.175</td>
+      <td>92.57 %</td>
+      <td>0.326</td>
+    </tr>
+  </table>
+
+  <h3>7.4 YOLO11l-cls (Large) — Detailed Observations</h3>
+
+  <ul>
+    <li><strong>No improvement</strong>: Accuracy stayed at <strong>86.63% (majority-class baseline)</strong> for nearly
+      all 101 epochs, with brief dips to 83.66% and 85.64%</li>
+    <li><strong>Validation loss went to NaN</strong> on 9 separate occasions (epochs 11, 43, 48, 57, 59, 85, 88, 96, 98,
+      99), indicating persistent numerical instability</li>
+    <li>Training loss <strong>plateaued</strong> around 0.39–0.41 with no meaningful decrease even after 100 epochs</li>
+    <li><strong>Early-stopped at epoch 101</strong> because accuracy never improved beyond the initial baseline
+      (patience=100 exhausted)</li>
+    <li>The larger model <strong>completely failed to learn</strong> meaningful features despite the improved batch size
+      and longer training — likely overwhelmed by its 12.84M parameters on a small, imbalanced dataset</li>
+  </ul>
+
+  <h3>7.5 Runs2 Training Curves</h3>
+
+  <p><em>[See attached images: YOLO11s-cls and YOLO11l-cls Training Curves — Runs2]</em></p>
+
+  <h3>7.6 Runs2 Confusion Matrices (Normalized)</h3>
+
+  <p><em>[See attached images: YOLO11s-cls and YOLO11l-cls Confusion Matrices — Runs2]</em></p>
+
+  <h3>7.7 Runs2 — Precision, Recall &amp; F1-Score</h3>
+
+  <p>Computed from the <strong>best-model confusion matrices</strong> above (test set, N = 202).</p>
+
+  <h4>Confusion Matrix Values (Absolute Counts)</h4>
+
+  <table>
+    <tr>
+      <th></th>
+      <th>True: GLAUCOMA SUSPECT</th>
+      <th>True: NORMAL</th>
+    </tr>
+    <tr>
+      <td><strong>YOLO11s — Pred: GLAUCOMA SUSPECT</strong></td>
+      <td>16 (TP)</td>
+      <td>3 (FP)</td>
+    </tr>
+    <tr>
+      <td><strong>YOLO11s — Pred: NORMAL</strong></td>
+      <td>11 (FN)</td>
+      <td>172 (TN)</td>
+    </tr>
+    <tr>
+      <td><strong>YOLO11l — Pred: GLAUCOMA SUSPECT</strong></td>
+      <td>0 (TP)</td>
+      <td>0 (FP)</td>
+    </tr>
+    <tr>
+      <td><strong>YOLO11l — Pred: NORMAL</strong></td>
+      <td>27 (FN)</td>
+      <td>175 (TN)</td>
+    </tr>
+  </table>
+
+  <h4>Per-Class Metrics</h4>
+
+  <table>
+    <tr>
+      <th>Metric</th>
+      <th>Class</th>
+      <th>YOLO11s-cls (Small)</th>
+      <th>YOLO11l-cls (Large)</th>
+    </tr>
+    <tr>
+      <td><strong>Precision</strong></td>
+      <td>GLAUCOMA SUSPECT</td>
+      <td><strong>84.21 %</strong> (16/19)</td>
+      <td>N/A (0/0 — never predicted)</td>
+    </tr>
+    <tr>
+      <td><strong>Recall</strong></td>
+      <td>GLAUCOMA SUSPECT</td>
+      <td><strong>59.26 %</strong> (16/27)</td>
+      <td><strong>0.00 %</strong> (0/27)</td>
+    </tr>
+    <tr>
+      <td><strong>F1-Score</strong></td>
+      <td>GLAUCOMA SUSPECT</td>
+      <td><strong>69.57 %</strong></td>
+      <td><strong>0.00 %</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Precision</strong></td>
+      <td>NORMAL</td>
+      <td><strong>93.99 %</strong> (172/183)</td>
+      <td><strong>86.63 %</strong> (175/202)</td>
+    </tr>
+    <tr>
+      <td><strong>Recall</strong></td>
+      <td>NORMAL</td>
+      <td><strong>98.29 %</strong> (172/175)</td>
+      <td><strong>100.00 %</strong> (175/175)</td>
+    </tr>
+    <tr>
+      <td><strong>F1-Score</strong></td>
+      <td>NORMAL</td>
+      <td><strong>96.09 %</strong></td>
+      <td><strong>92.83 %</strong></td>
+    </tr>
+    <tr style="font-weight:bold;">
+      <td>Overall Accuracy</td>
+      <td>—</td>
+      <td>93.07 % (188/202)</td>
+      <td>86.63 % (175/202)</td>
+    </tr>
+  </table>
+
+  <div class="warning">
+    <strong>⚠️ Warning:</strong>
+    <strong>YOLO11l-cls (Large) never predicted GLAUCOMA SUSPECT</strong> — all 27 glaucoma-suspect images were
+    misclassified as NORMAL, giving <strong>Recall = 0%</strong> for the positive class. Its 86.63% accuracy is exactly
+    the majority-class baseline. <strong>YOLO11s-cls correctly identified 16 of 27 glaucoma suspects</strong> (Recall ≈
+    59%), with only 3 false positives out of 175 normal images (FP rate = 1.7%).
+  </div>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>8. Full Comparison: Runs1 vs Runs2</h2>
+
+  <table>
+    <tr>
+      <th>Metric</th>
+      <th>Runs1 YOLO11s</th>
+      <th>Runs1 YOLO11l</th>
+      <th>Runs2 YOLO11s</th>
+      <th>Runs2 YOLO11l</th>
+    </tr>
+    <tr>
+      <td>Epochs</td>
+      <td>50</td>
+      <td>50</td>
+      <td><strong>285</strong> (early-stop)</td>
+      <td><strong>101</strong> (early-stop)</td>
+    </tr>
+    <tr>
+      <td>Image Size</td>
+      <td>1024</td>
+      <td>1024</td>
+      <td><strong>512</strong></td>
+      <td><strong>512</strong></td>
+    </tr>
+    <tr>
+      <td>Batch Size</td>
+      <td>1</td>
+      <td>1</td>
+      <td><strong>16</strong></td>
+      <td><strong>16</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Top-1 Accuracy</strong></td>
+      <td>86.63 %</td>
+      <td>87.13 %</td>
+      <td><strong>93.07 % ✅</strong></td>
+      <td>86.63 % ❌</td>
+    </tr>
+    <tr>
+      <td>Best Epoch</td>
+      <td>All (constant)</td>
+      <td>3</td>
+      <td>~185+</td>
+      <td>— (never improved)</td>
+    </tr>
+    <tr>
+      <td>Train Loss (final)</td>
+      <td>0.400</td>
+      <td>0.391</td>
+      <td><strong>0.175</strong></td>
+      <td>0.403</td>
+    </tr>
+    <tr>
+      <td>Val Loss Stability</td>
+      <td>Stable</td>
+      <td>NaN (severe)</td>
+      <td>Stable</td>
+      <td>NaN (9 occurrences)</td>
+    </tr>
+    <tr>
+      <td>Behaviour</td>
+      <td>Majority-class only</td>
+      <td>Unstable / NaN</td>
+      <td><strong>Genuine learning</strong></td>
+      <td>Majority-class only</td>
+    </tr>
+  </table>
+
+  <div class="tip">
+    <strong>💡 Tip:</strong>
+    <strong>Runs2 YOLO11s-cls is the clear winner.</strong> The combination of batch=16 and imgsz=512 enabled the small
+    model to break past the majority-class baseline and achieve <strong>93.07% accuracy</strong> — a <strong>+6.44
+      percentage point improvement</strong> over Runs1. The larger model, paradoxically, performed worse.
+  </div>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>9. Summary &amp; Key Takeaways</h2>
+
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Finding</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><strong>Runs1</strong>: Both models were stuck at or near the majority-class baseline (86.63%). YOLO11s
+        predicted only NORMAL; YOLO11l had severe NaN instability</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Runs2 hyperparameter changes</strong>: epochs 50→300, imgsz 1024→512, batch 1→16 — addressing the
+        noisy-gradient hypothesis</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>YOLO11s-cls (Runs2) achieved 93.07% accuracy</strong> — up from 86.63%, breaking out of majority-class
+        prediction and genuinely learning to classify GLAUCOMA SUSPECT</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>YOLO11l-cls (Runs2) failed completely</strong> — stayed at 86.63% baseline for all 101 epochs
+        (patience exhausted), with recurring NaN val/loss. The 12.84M-parameter model appears too large for this small,
+        imbalanced dataset</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>Smaller model outperformed larger model</strong> — YOLO11s (5.45M params) benefited from tuning while
+        YOLO11l (12.84M params) remained stuck, suggesting the dataset size is insufficient for the larger architecture
+      </td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><strong>Class imbalance remains a concern</strong> — even at 93.07%, further gains may require class
+        weighting, oversampling, or focal loss</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <h2>10. File References</h2>
+
+  <table>
+    <tr>
+      <th>File</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>retrain_fulldata.py</td>
+      <td>Runs1 training script (epochs=50, imgsz=1024, batch=1)</td>
+    </tr>
+    <tr>
+      <td>retrain_fulldata_v2.py</td>
+      <td>Runs2 training script (epochs=300, imgsz=512, batch=16)</td>
+    </tr>
+    <tr>
+      <td>model_train_fulldata.ipynb</td>
+      <td>Original training notebook</td>
+    </tr>
+    <tr>
+      <td>remidio_images_updated.csv</td>
+      <td>Remidio camera labels (810 images)</td>
+    </tr>
+    <tr>
+      <td>bosch_data.csv</td>
+      <td>Bosch camera labels (104 images)</td>
+    </tr>
+    <tr>
+      <td>forus_data.csv</td>
+      <td>Forus camera labels (95 images)</td>
+    </tr>
+    <tr>
+      <td>runs/classify/train_full_s</td>
+      <td>Small model Runs1 outputs</td>
+    </tr>
+    <tr>
+      <td>runs/classify/train_full_l</td>
+      <td>Large model Runs1 outputs</td>
+    </tr>
+    <tr>
+      <td>runs2/train_full_s</td>
+      <td>Small model Runs2 outputs</td>
+    </tr>
+    <tr>
+      <td>runs2/train_full_l</td>
+      <td>Large model Runs2 outputs</td>
+    </tr>
+  </table>
+
+</body>
+
+</html>
