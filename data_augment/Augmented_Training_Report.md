@@ -2,9 +2,9 @@
 
 **Date**: 2 March 2026
 **Models**: YOLO11s-cls (small) and YOLO11l-cls (large)
-**Dataset**: Augmented glaucoma classification dataset (see [Data_Augmentation_Report.md](file:///home/abhay/chaksu/20123135/Train/data_augment/Data_Augmentation_Report.md))
-**Training Script**: [train_augmented.py](file:///home/abhay/chaksu/20123135/Train/data_augment/train_augmented.py)
-**Threshold Tuning Script**: [threshold_tuning_augmented.py](file:///home/abhay/chaksu/20123135/Train/data_augment/threshold_tuning_augmented.py)
+**Dataset**: Augmented glaucoma classification dataset (see [Data_Augmentation_Report.md](file://data_augment/Data_Augmentation_Report.md))
+**Training Script**: [train_augmented.py](file://data_augment/train_augmented.py)
+**Threshold Tuning Script**: [threshold_tuning_augmented.py](file://data_augment/threshold_tuning_augmented.py)
 
 ---
 
@@ -52,9 +52,9 @@ Both models used identical training settings.
 ### 3.2 Training Curves
 
 ````carousel
-![YOLO11s-cls (Augmented) Training Curves](/home/abhay/chaksu/20123135/Train/data_augment/runs/yolo11s_augmented/results.png)
+![YOLO11s-cls (Augmented) Training Curves](data_augment/runs/yolo11s_augmented/results.png)
 <!-- slide -->
-![YOLO11l-cls (Augmented) Training Curves](/home/abhay/chaksu/20123135/Train/data_augment/runs/yolo11l_augmented/results.png)
+![YOLO11l-cls (Augmented) Training Curves](data_augment/runs/yolo11l_augmented/results.png)
 ````
 
 ### 3.3 Key Observations
@@ -80,13 +80,13 @@ All confusion matrices below are evaluated on the **test set** (152 images: 21 G
 ### 4.1 Confusion Matrices (Test Set)
 
 ````carousel
-![YOLO11s-cls Test Set Confusion Matrix](/home/abhay/chaksu/20123135/Train/data_augment/runs/yolo11s_augmented/confusion_matrix.png)
+![YOLO11s-cls Test Set Confusion Matrix](data_augment/runs/yolo11s_augmented/confusion_matrix.png)
 <!-- slide -->
-![YOLO11s-cls Test Set Confusion Matrix Normalized](/home/abhay/chaksu/20123135/Train/data_augment/runs/yolo11s_augmented/confusion_matrix_normalized.png)
+![YOLO11s-cls Test Set Confusion Matrix Normalized](data_augment/runs/yolo11s_augmented/confusion_matrix_normalized.png)
 <!-- slide -->
-![YOLO11l-cls Test Set Confusion Matrix](/home/abhay/chaksu/20123135/Train/data_augment/runs/yolo11l_augmented/confusion_matrix.png)
+![YOLO11l-cls Test Set Confusion Matrix](data_augment/runs/yolo11l_augmented/confusion_matrix.png)
 <!-- slide -->
-![YOLO11l-cls Test Set Confusion Matrix Normalized](/home/abhay/chaksu/20123135/Train/data_augment/runs/yolo11l_augmented/confusion_matrix_normalized.png)
+![YOLO11l-cls Test Set Confusion Matrix Normalized](data_augment/runs/yolo11l_augmented/confusion_matrix_normalized.png)
 ````
 
 ### 4.2 Confusion Matrix Values (Absolute Counts)
@@ -172,7 +172,7 @@ The default YOLO classification threshold is 0.5, meaning if P(GLAUCOMA_SUSPECT)
 
 ## 6. Comparison: Augmented vs Non-Augmented Models
 
-This compares the best augmented models (from this report) against the best non-augmented model (Runs2 YOLO11s from the main [YOLO_Training_Report.md](file:///home/abhay/chaksu/20123135/Train/YOLO_Training_Report.md)).
+This compares the best augmented models (from this report) against the best non-augmented model (Runs2 YOLO11s from the main [YOLO_Training_Report.md](file://YOLO_Training_Report.md)).
 
 | Metric | Non-Aug Runs2 YOLO11s | Aug YOLO11s (t=0.25) | Aug YOLO11l (t=0.20) |
 |--------|:--------------------:|:--------------------:|:--------------------:|

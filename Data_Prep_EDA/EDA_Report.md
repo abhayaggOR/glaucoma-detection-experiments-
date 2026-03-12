@@ -8,9 +8,9 @@ The EDA was conducted in three Jupyter notebooks:
 
 | Notebook | Camera | Location |
 |----------|--------|----------|
-| [eda_remidio_image.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/eda/eda_remidio_image.ipynb) | Remidio | Most extensive — covers CSV/label analysis, image-level EDA, and cross-dataset preparation |
-| [eda_bosch_image.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/eda/eda_bosch_image.ipynb) | Bosch | Image-level EDA (resolution, brightness, contrast) |
-| [eda_forus_image.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/eda/eda_forus_image.ipynb) | Forus | Image-level EDA (resolution, brightness, contrast) |
+| [eda_remidio_image.ipynb](file://6.0_Glaucoma_Decision/eda/eda_remidio_image.ipynb) | Remidio | Most extensive — covers CSV/label analysis, image-level EDA, and cross-dataset preparation |
+| [eda_bosch_image.ipynb](file://6.0_Glaucoma_Decision/eda/eda_bosch_image.ipynb) | Bosch | Image-level EDA (resolution, brightness, contrast) |
+| [eda_forus_image.ipynb](file://6.0_Glaucoma_Decision/eda/eda_forus_image.ipynb) | Forus | Image-level EDA (resolution, brightness, contrast) |
 
 ---
 
@@ -254,8 +254,8 @@ A final **combined balanced dataset** was created by merging all three balanced 
 
 | File | Description |
 |------|-------------|
-| [eda_remidio_image.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/eda/eda_remidio_image.ipynb) | Full Remidio EDA — labels, experts, images, CSV transformation, balanced dataset creation |
-| [eda_bosch_image.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/eda/eda_bosch_image.ipynb) | Bosch image-level EDA — resolution, brightness, contrast |
-| [eda_forus_image.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/eda/eda_forus_image.ipynb) | Forus image-level EDA — resolution, brightness, contrast |
-| [remidio_images_updated.csv](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/remidio_images_updated.csv) | Remidio CSV with fixed `.jpg` filenames |
-| [combined_balanced_all_cameras.csv](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/combined_balanced_all_cameras.csv) | Final balanced dataset (276 images, 138 per class) |
+| [eda_remidio_image.ipynb](file://6.0_Glaucoma_Decision/eda/eda_remidio_image.ipynb) | Full Remidio EDA — labels, experts, images, CSV transformation, balanced dataset creation |
+| [eda_bosch_image.ipynb](file://6.0_Glaucoma_Decision/eda/eda_bosch_image.ipynb) | Bosch image-level EDA — resolution, brightness, contrast |
+| [eda_forus_image.ipynb](file://6.0_Glaucoma_Decision/eda/eda_forus_image.ipynb) | Forus image-level EDA — resolution, brightness, contrast |
+| [remidio_images_updated.csv](file://6.0_Glaucoma_Decision/remidio_images_updated.csv) | Remidio CSV with fixed `.jpg` filenames |
+| [combined_balanced_all_cameras.csv](file://6.0_Glaucoma_Decision/combined_balanced_all_cameras.csv) | Final balanced dataset (276 images, 138 per class) |

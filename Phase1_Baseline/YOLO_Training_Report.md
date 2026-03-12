@@ -30,7 +30,7 @@ The dataset is **heavily imbalanced** — approximately **86.4 % NORMAL** and **
 
 ## 3. Data Preparation Pipeline
 
-Implemented in [retrain_fulldata.py](file:///home/abhay/chaksu/20123135/Train/retrain_fulldata.py).
+Implemented in [retrain_fulldata.py](file://retrain_fulldata.py).
 
 ### 3.1 Steps
 
@@ -167,17 +167,17 @@ Two models were trained — **YOLO11s-cls** (Small) and **YOLO11l-cls** (Large).
 ### 6.5 Training Curves
 
 ````carousel
-![YOLO11s-cls Training Curves (Full Dataset)](/home/abhay/chaksu/20123135/Train/yolo11s_fulldata_results.png)
+![YOLO11s-cls Training Curves (Full Dataset)](yolo11s_fulldata_results.png)
 <!-- slide -->
-![YOLO11l-cls Training Curves (Full Dataset)](/home/abhay/chaksu/20123135/Train/yolo11l_fulldata_results.png)
+![YOLO11l-cls Training Curves (Full Dataset)](yolo11l_fulldata_results.png)
 ````
 
 ### 6.6 Confusion Matrices (Normalized)
 
 ````carousel
-![YOLO11s-cls Confusion Matrix (Full Dataset)](/home/abhay/chaksu/20123135/Train/yolo11s_fulldata_confusion_matrix.png)
+![YOLO11s-cls Confusion Matrix (Full Dataset)](yolo11s_fulldata_confusion_matrix.png)
 <!-- slide -->
-![YOLO11l-cls Confusion Matrix (Full Dataset)](/home/abhay/chaksu/20123135/Train/yolo11l_fulldata_confusion_matrix.png)
+![YOLO11l-cls Confusion Matrix (Full Dataset)](yolo11l_fulldata_confusion_matrix.png)
 ````
 
 ### 6.7 Runs1 — Precision, Recall & F1-Score
@@ -222,7 +222,7 @@ The first run (Runs1) showed both models were either stuck at the majority-class
 | **Epochs** | 50 | **300** | Allow more time for convergence |
 | **Image Size** | 1024 × 1024 | **512 × 512** | Reduce memory per sample |
 | **Batch Size** | 1 | **16** | Smoother gradients, better class statistics per batch |
-| Training Script | [retrain_fulldata.py](file:///home/abhay/chaksu/20123135/Train/retrain_fulldata.py) | [retrain_fulldata_v2.py](file:///home/abhay/chaksu/20123135/Train/retrain_fulldata_v2.py) | — |
+| Training Script | [retrain_fulldata.py](file://retrain_fulldata.py) | [retrain_fulldata_v2.py](file://retrain_fulldata_v2.py) | — |
 
 > [!IMPORTANT]
 > The dataset (1,008 images, 80/20 stratified split, seed=42) was **identical** to Runs1. Only the training hyperparameters changed.
@@ -268,17 +268,17 @@ The first run (Runs1) showed both models were either stuck at the majority-class
 ### 7.5 Runs2 Training Curves
 
 ````carousel
-![YOLO11s-cls Runs2 Training Curves](/home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs2/train_full_s/results.png)
+![YOLO11s-cls Runs2 Training Curves](6.0_Glaucoma_Decision/runs2/train_full_s/results.png)
 <!-- slide -->
-![YOLO11l-cls Runs2 Training Curves](/home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs2/train_full_l/results.png)
+![YOLO11l-cls Runs2 Training Curves](6.0_Glaucoma_Decision/runs2/train_full_l/results.png)
 ````
 
 ### 7.6 Runs2 Confusion Matrices (Normalized)
 
 ````carousel
-![YOLO11s-cls Runs2 Confusion Matrix](/home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs2/train_full_s/confusion_matrix_normalized.png)
+![YOLO11s-cls Runs2 Confusion Matrix](6.0_Glaucoma_Decision/runs2/train_full_s/confusion_matrix_normalized.png)
 <!-- slide -->
-![YOLO11l-cls Runs2 Confusion Matrix](/home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs2/train_full_l/confusion_matrix_normalized.png)
+![YOLO11l-cls Runs2 Confusion Matrix](6.0_Glaucoma_Decision/runs2/train_full_l/confusion_matrix_normalized.png)
 ````
 
 ### 7.7 Runs2 — Precision, Recall & F1-Score
@@ -349,13 +349,13 @@ Computed from the **best-model confusion matrices** above (test set, N = 202).
 
 | File | Description |
 |------|-------------|
-| [retrain_fulldata.py](file:///home/abhay/chaksu/20123135/Train/retrain_fulldata.py) | Runs1 training script (epochs=50, imgsz=1024, batch=1) |
-| [retrain_fulldata_v2.py](file:///home/abhay/chaksu/20123135/Train/retrain_fulldata_v2.py) | Runs2 training script (epochs=300, imgsz=512, batch=16) |
-| [model_train_fulldata.ipynb](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/model_train_fulldata.ipynb) | Original training notebook |
-| [remidio_images_updated.csv](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/remidio_images_updated.csv) | Remidio camera labels (810 images) |
-| [bosch_data.csv](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/bosch_data.csv) | Bosch camera labels (104 images) |
-| [forus_data.csv](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/forus_data.csv) | Forus camera labels (95 images) |
-| [Runs1 YOLO11s results](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs/classify/train_full_s) | Small model Runs1 outputs |
-| [Runs1 YOLO11l results](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs/classify/train_full_l) | Large model Runs1 outputs |
-| [Runs2 YOLO11s results](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs2/train_full_s) | Small model Runs2 outputs |
-| [Runs2 YOLO11l results](file:///home/abhay/chaksu/20123135/Train/6.0_Glaucoma_Decision/runs2/train_full_l) | Large model Runs2 outputs |
+| [retrain_fulldata.py](file://retrain_fulldata.py) | Runs1 training script (epochs=50, imgsz=1024, batch=1) |
+| [retrain_fulldata_v2.py](file://retrain_fulldata_v2.py) | Runs2 training script (epochs=300, imgsz=512, batch=16) |
+| [model_train_fulldata.ipynb](file://6.0_Glaucoma_Decision/model_train_fulldata.ipynb) | Original training notebook |
+| [remidio_images_updated.csv](file://6.0_Glaucoma_Decision/remidio_images_updated.csv) | Remidio camera labels (810 images) |
+| [bosch_data.csv](file://6.0_Glaucoma_Decision/bosch_data.csv) | Bosch camera labels (104 images) |
+| [forus_data.csv](file://6.0_Glaucoma_Decision/forus_data.csv) | Forus camera labels (95 images) |
+| [Runs1 YOLO11s results](file://6.0_Glaucoma_Decision/runs/classify/train_full_s) | Small model Runs1 outputs |
+| [Runs1 YOLO11l results](file://6.0_Glaucoma_Decision/runs/classify/train_full_l) | Large model Runs1 outputs |
+| [Runs2 YOLO11s results](file://6.0_Glaucoma_Decision/runs2/train_full_s) | Small model Runs2 outputs |
+| [Runs2 YOLO11l results](file://6.0_Glaucoma_Decision/runs2/train_full_l) | Large model Runs2 outputs |
