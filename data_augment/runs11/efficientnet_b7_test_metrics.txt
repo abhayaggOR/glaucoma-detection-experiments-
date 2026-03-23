@@ -1,0 +1,7 @@
+Model: efficientnet_b7
+Threshold: 0.50
+Accuracy:  0.8158
+Precision: 0.1111
+Recall:    0.0476
+F1 Score:  0.0667
+TP=1, FP=8, TN=123, FN=20
