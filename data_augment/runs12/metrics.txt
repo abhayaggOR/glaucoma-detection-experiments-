@@ -1,0 +1,56 @@
+--- Evaluating YOLO11s-cls ---
+Ultralytics 8.4.11 🚀 Python-3.12.2 torch-2.10.0+cu128 CUDA:0 (NVIDIA RTX 2000 Ada Generation, 15971MiB)
+YOLO11s-cls summary (fused): 47 layers, 5,436,690 parameters, 0 gradients, 12.0 GFLOPs
+[34m[1mtrain:[0m /home/abhay/chaksu/20123135/Train/data_augment/train... found 812 images in 2 classes ✅ 
+[34m[1mval:[0m /home/abhay/chaksu/20123135/Train/data_augment/val... found 151 images in 2 classes ✅ 
+[34m[1mtest:[0m /home/abhay/chaksu/20123135/Train/data_augment/test... found 152 images in 2 classes ✅ 
+[34m[1mtest: [0mFast image access ✅ (ping: 0.0±0.0 ms, read: 3338.6±1304.0 MB/s, size: 3160.8 KB)
+[K[34m[1mtest: [0mScanning /home/abhay/chaksu/20123135/Train/data_augment/test... 152 images, 0 corrupt: 100% ━━━━━━━━━━━━ 152/152 39.8Mit/s 0.0s
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/GLAUCOMA_SUSPECT/Image107.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/GLAUCOMA_SUSPECT/Image188.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image111.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image120.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image123.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image140.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image143.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image146.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/P8_Image1.JPG: corrupt JPEG restored and saved
+[K               classes   top1_acc   top5_acc: 10% ━─────────── 1/10 4.6s/it 1.4s<41.0s[K               classes   top1_acc   top5_acc: 30% ━━━╸──────── 3/10 4.6it/s 1.5s<1.5s[K               classes   top1_acc   top5_acc: 60% ━━━━━━━───── 6/10 11.7it/s 1.6s<0.3s[K               classes   top1_acc   top5_acc: 90% ━━━━━━━━━━╸─ 9/10 9.0it/s 2.7s<0.1s[K               classes   top1_acc   top5_acc: 100% ━━━━━━━━━━━━ 10/10 3.7it/s 2.7s
+                   all      0.908          1
+Speed: 0.3ms preprocess, 2.8ms inference, 0.0ms loss, 0.0ms postprocess per image
+Classes: {0: 'GLAUCOMA_SUSPECT', 1: 'NORMAL'}
+Confusion Matrix (Raw):
+[[         11           4           0]
+ [         10         127           0]
+ [          0           0           0]]
+GLAUCOMA_SUSPECT -> TP: 11, FN: 4, FP: 10, TN: 127
+GLAUCOMA_SUSPECT -> Recall: 0.7333, Precision: 0.5238, F1: 0.6111, Accuracy: 0.9079
+
+--- Evaluating YOLO11l-cls ---
+Ultralytics 8.4.11 🚀 Python-3.12.2 torch-2.10.0+cu128 CUDA:0 (NVIDIA RTX 2000 Ada Generation, 15971MiB)
+YOLO11l-cls summary (fused): 94 layers, 12,820,994 parameters, 0 gradients, 49.3 GFLOPs
+[34m[1mtrain:[0m /home/abhay/chaksu/20123135/Train/data_augment/train... found 812 images in 2 classes ✅ 
+[34m[1mval:[0m /home/abhay/chaksu/20123135/Train/data_augment/val... found 151 images in 2 classes ✅ 
+[34m[1mtest:[0m /home/abhay/chaksu/20123135/Train/data_augment/test... found 152 images in 2 classes ✅ 
+[34m[1mtest: [0mFast image access ✅ (ping: 0.0±0.0 ms, read: 4940.7±657.7 MB/s, size: 3160.8 KB)
+[K[34m[1mtest: [0mScanning /home/abhay/chaksu/20123135/Train/data_augment/test... 152 images, 0 corrupt: 100% ━━━━━━━━━━━━ 152/152 70.8Mit/s 0.0s
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/GLAUCOMA_SUSPECT/Image107.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/GLAUCOMA_SUSPECT/Image188.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image111.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image120.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image123.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image140.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image143.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/Image146.JPG: corrupt JPEG restored and saved
+[34m[1mtest: [0m/home/abhay/chaksu/20123135/Train/data_augment/test/NORMAL/P8_Image1.JPG: corrupt JPEG restored and saved
+[K               classes   top1_acc   top5_acc: 10% ━─────────── 1/10 6.0s/it 1.8s<53.7s[K               classes   top1_acc   top5_acc: 20% ━━────────── 2/10 3.0it/s 1.9s<2.7s[K               classes   top1_acc   top5_acc: 30% ━━━╸──────── 3/10 5.0it/s 2.0s<1.4s[K               classes   top1_acc   top5_acc: 40% ━━━━╸─────── 4/10 6.5it/s 2.1s<0.9s[K               classes   top1_acc   top5_acc: 50% ━━━━━━────── 5/10 7.5it/s 2.2s<0.7s[K               classes   top1_acc   top5_acc: 60% ━━━━━━━───── 6/10 8.3it/s 2.3s<0.5s[K               classes   top1_acc   top5_acc: 70% ━━━━━━━━──── 7/10 8.8it/s 2.4s<0.3s[K               classes   top1_acc   top5_acc: 80% ━━━━━━━━━╸── 8/10 9.1it/s 2.5s<0.2s[K               classes   top1_acc   top5_acc: 90% ━━━━━━━━━━╸─ 9/10 6.7it/s 3.4s<0.1s[K               classes   top1_acc   top5_acc: 100% ━━━━━━━━━━━━ 10/10 2.9it/s 3.5s
+                   all      0.829          1
+Speed: 0.3ms preprocess, 6.0ms inference, 0.0ms loss, 0.0ms postprocess per image
+Classes: {0: 'GLAUCOMA_SUSPECT', 1: 'NORMAL'}
+Confusion Matrix (Raw):
+[[          8          13           0]
+ [         13         118           0]
+ [          0           0           0]]
+GLAUCOMA_SUSPECT -> TP: 8, FN: 13, FP: 13, TN: 118
+GLAUCOMA_SUSPECT -> Recall: 0.3810, Precision: 0.3810, F1: 0.3810, Accuracy: 0.8289
+
