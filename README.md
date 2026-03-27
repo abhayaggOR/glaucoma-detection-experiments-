@@ -60,7 +60,7 @@ To push recall even higher, we experimented with advanced weighting techniques h
 | **Runs15** (Differential LR) | YOLO11s | **0.5882** | 0.4762 | 0.5263 | 0.8816 |
 | **Runs15** (Differential LR) | YOLO11l | 0.5625 | 0.4286 | 0.4865 | 0.8750 |
 | **Runs16** (Progressive Unfreezing) | YOLO11s | 0.5625 | 0.4286 | 0.4865 | 0.8750 |
-| **Runs16** (Progressive Unfreezing) | YOLO11l | **0.6667** | 0.2857 | 0.4000 | 0.8816 |
+| **Runs16** (Progressive Unfreezing) | YOLO11l | **0.2857** | **0.6667** | 0.4000 | 0.8816 |
 
 ---
 
