@@ -44,6 +44,24 @@ To push recall even higher, we experimented with advanced weighting techniques h
 - **What**: Evaluated whether PyTorch-native EfficientNet variants (B0 to B3) could outperform YOLO for this specific task, using explicit label smoothing.
 - **Result**: The EfficientNet models underperformed compared to YOLOv11 across the board. YOLO remained the definitive choice for this deployment.
 
+### Phase 5: Advanced Unfreezing & Layer Analysis (`data_augment/runs12` to `runs16`)
+- **What**: Explored whether freezing combinations of the YOLO backbone and manipulating stage-wise learning rates could overcome the class bias natively.
+- **Experiments**:
+  - **Runs 12**: Simple baseline cross-entropy on augmented data.
+  - **Runs 13 / 14**: Froze the backbone, exclusively fine-tuning the last 3 and 5 layers of the classification head.
+  - **Runs 15**: Differential Learning Rates using PyTorch gradient hooks (Early layers: `1e-5`, Middle: `5e-5`, Head: `1e-4`) with Focal Loss.
+  - **Runs 16**: Progressive Unfreezing (Stage 1: Head-only → Stage 2: Partial Unfreeze → Stage 3: Full Unfreeze) with Focal Loss.
+- **Results**: Partial freezing blocks failed to resolve the class imbalance, acting as a ceiling on recall. The Differential LR and Progressive Unfreezing approaches restored stability, with **Progressive Unfreezing (Runs 16) achieving the highest recall (66.67%) of any backbone manipulation technique**.
+- **Conclusion**: Unrestricted, full-model backpropagation combined with Focal Loss (Phase 3) remains the undisputed optimum strategy for maximum recall.
+
+#### Phase 5 Validation (Test Split)
+| Experiment | Model | Recall (Glaucoma) | Precision | F1-Score | Accuracy |
+|---|---|:---:|:---:|:---:|:---:|
+| **Runs15** (Differential LR) | YOLO11s | **0.5882** | 0.4762 | 0.5263 | 0.8816 |
+| **Runs15** (Differential LR) | YOLO11l | 0.5625 | 0.4286 | 0.4865 | 0.8750 |
+| **Runs16** (Progressive Unfreezing) | YOLO11s | 0.5625 | 0.4286 | 0.4865 | 0.8750 |
+| **Runs16** (Progressive Unfreezing) | YOLO11l | **0.6667** | 0.2857 | 0.4000 | 0.8816 |
+
 ---
 
 ## 🚀 How to Run
