@@ -45,16 +45,13 @@ To push recall even higher, we experimented with advanced weighting techniques h
 - **Result**: The EfficientNet models underperformed compared to YOLOv11 across the board. YOLO remained the definitive choice for this deployment.
 
 ### Phase 5: Advanced Unfreezing & Layer Analysis (`data_augment/runs12` to `runs16`)
-- **What**: Explored whether freezing combinations of the YOLO backbone and manipulating stage-wise learning rates could overcome the class bias natively.
-- **Experiments**:
-  - **Runs 12**: Simple baseline cross-entropy on augmented data.
-  - **Runs 13 / 14**: Froze the backbone, exclusively fine-tuning the last 3 and 5 layers of the classification head.
-  - **Runs 15**: Differential Learning Rates using PyTorch gradient hooks (Early layers: `1e-5`, Middle: `5e-5`, Head: `1e-4`) with Focal Loss.
-  - **Runs 16**: Progressive Unfreezing (Stage 1: Head-only → Stage 2: Partial Unfreeze → Stage 3: Full Unfreeze) with Focal Loss.
-- **Results**: Partial freezing blocks failed to resolve the class imbalance, acting as a ceiling on recall. The Differential LR and Progressive Unfreezing approaches restored stability, with **Progressive Unfreezing (Runs 16) achieving the highest recall (66.67%) of any backbone manipulation technique**.
-- **Conclusion**: Unrestricted, full-model backpropagation combined with Focal Loss (Phase 3) remains the undisputed optimum strategy for maximum recall.
+## 📈 Phase 5: Advanced Loss & Gradient Sculpting (Runs 15–16)
 
-#### Phase 5 Validation (Test Split)
+With fundamental data structures established, we performed advanced PyTorch gradient surgery to unstick the heavier models from local minima without reducing model capacity:
+1. **Differential Learning Rates (`Runs15`)**: Applied parameter hook scaling to manually isolate the backbone to `1e-5`, the neck to `5e-5`, and the classification head to `1e-4`, drastically stabilizing early-layer weight decay.
+2. **Progressive Unfreezing (`Runs16`)**: Sequentially chained `YOLO.train()` states mathematically unfreezing the architecture from Head-Only -> Deep Layers -> Full Architecture over 140 epochs to prevent catastrophic forgetting.
+
+### Phase 5 Validation (Test Split)
 | Experiment | Model | Recall (Glaucoma) | Precision | F1-Score | Accuracy |
 |---|---|:---:|:---:|:---:|:---:|
 | **Runs15** (Differential LR) | YOLO11s | 0.4762 | **0.5882** | 0.5263 | 0.8816 |
@@ -62,27 +59,19 @@ To push recall even higher, we experimented with advanced weighting techniques h
 | **Runs16** (Progressive Unfreezing) | YOLO11s | 0.4286 | 0.5625 | 0.4865 | 0.8750 |
 | **Runs16** (Progressive Unfreezing) | YOLO11l | **0.2857** | **0.6667** | 0.4000 | 0.8816 |
 
+**Conclusion**: Surgical PyTorch techniques provide marginal stability but do not overcome the absolute raw effectiveness of a fully un-frozen architecture guided purely by heavily biased `Focal Loss` (Runs6).
+
 ---
 
-## 🚀 How to Run
+## 🚀 Phase 6: Supervised Contrastive Learning (SupCon) — [CURRENTLY RUNNING]
 
-### Requirements
-```bash
-pip install ultralytics torch torchvision numpy pandas scikit-learn matplotlib Pillow
-```
-
-### Reproducing the Best Model
-Assuming you have your data in standard YOLO classification folder format (`data_augment/train`, `val`, `test`):
-
-1. **Train using Focal Loss**:
-   ```bash
-   cd data_augment
-   python3 train_focal_loss.py
-   ```
-2. **Evaluate & Sweep Thresholds**:
-   ```bash
-   python3 threshold_tuning_weighted.py
-   ```
-
-## 📊 Final Status
-We successfully took a heavily imbalanced raw dataset where baseline models completely failed (0% recall), and iteratively engineered a pipeline (Targeted Augmentation → Focal Loss → Threshold Sweep) that achieved **~90% Recall** for Glaucoma detection.
+To maximize the feature separability of our absolute best `YOLO11s` backbone (from Runs6), we are currently executing a comprehensive **Supervised Contrastive Learning (SupCon)** pipeline inside `Runs17`:
+1. **Stage 1 (Feature Extraction)**: Stripped the standard Ultralytics classification head, leaving a pure 1024-dimensional spatial feature extractor.
+2. **Stage 2 (Contrastive Pretraining)**: Forcing representation tightness using heavy dual-augmentations (RandomResizedCrops, Gaussian Blurs, Color Jitters, Grayscale) under a PyTorch `SupConLoss` constraint (150 Epochs).
+3. **Stage 3 (Classifier Fine-Tuning)**: Training a dedicated linear classifier through four simultaneous ablations:
+   - Baseline (No SupCon)
+   - SupCon + Frozen Backbone
+   - SupCon + Partial Backbone Finetuning
+   - SupCon + Full Pipeline Finetuning
+   
+*(Awaiting final results from local GPU cluster)*
