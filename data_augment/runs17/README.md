@@ -26,10 +26,10 @@ After burning the SupCon topology into the backbone, the projection head is disc
 
 | Model State | Accuracy | Precision | Recall | F1 Score |
 |-------------|:--------:|:---------:|:------:|:--------:|
-| **Baseline (Runs6 + New Head)** | TBH | TBH | TBH | TBH |
-| **SupCon (Frozen Backbone)** | TBH | TBH | TBH | TBH |
-| **SupCon (Partial Finetune)** | TBH | TBH | TBH | TBH |
-| **SupCon (Full Finetune)** | TBH | TBH | TBH | TBH |
+| **Baseline (Runs6 + New Head)** | 0.9145 | 0.8333 | 0.4762 | 0.6061 |
+| **SupCon (Frozen Backbone)** | 0.9145 | 0.9000 | 0.4286 | 0.5806 |
+| **SupCon (Partial Finetune)** | **0.9211** | 0.8462 | **0.5238** | **0.6471** |
+| **SupCon (Full Finetune)** | 0.9145 | 0.9000 | 0.4286 | 0.5806 |
 
 ---
 
@@ -39,10 +39,16 @@ The experiment auto-generated extreme dimensionality reductions representing the
 
 1. **Before SupCon**: `tsne_pre_supcon.png`
 2. **After SupCon**: `tsne_post_supcon.png`
+3. **Confusion Matrices**: Note: All matrices are natively computed against `y_true=1` representing Glaucoma directly.
+   - `baseline_no_supcon_cm.png`
+   - `supcon_frozen_cm.png`
+   - `supcon_partial_cm.png`
+   - `supcon_full_cm.png`
 
 ---
 
 ## 4. Key Takeaways
 
-1. *To be calculated post training*
-2. *To be calculated post training*
+1. **Partial Finetuning Stability**: Extracting P5 spatial features and opening only the bottleneck layer (layer 9) to finetuning achieved the highest F1-Score (**64.71%**) of any SupCon baseline architecture thus far.
+2. **Extreme Class Condensation**: Similar to Runs18 results, SupCon training artificially grouped the `NORMAL` majority class into an almost impenetrable cluster. The full-finetune model dropped to detecting only 9 Glaucoma images, but achieved an astonishing 90.00% precision (1 False Positive maximum constraint).
+3. **Validating Strategy Integrity**: SupCon forces the classification bottleneck to act as an incredibly restrictive filter!

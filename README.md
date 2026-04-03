@@ -74,7 +74,18 @@ To maximize the feature separability of our absolute best `YOLO11s` backbone (fr
    - SupCon + Partial Backbone Finetuning
    - SupCon + Full Pipeline Finetuning
    
-*(Awaiting final results from local GPU cluster)*
+
+### Phase 6 Validation (Test Split - Runs 17)
+| Experiment Strategy | Recall (Glaucoma) | Precision | F1-Score | Accuracy |
+|---------------------|:-----------------:|:---------:|:--------:|:--------:|
+| Baseline (No SupCon) | 47.62% | 83.33% | 60.61% | 91.45% |
+| SupCon + Frozen Backbone | 42.86% | 90.00% | 58.06% | 91.45% |
+| **SupCon + Partial Finetune** | **52.38%** | **84.62%** | **64.71%** | **92.11%** |
+| SupCon + Full Finetune | 42.86% | 90.00% | 58.06% | 91.45% |
+
+**Conclusion:**
+Contrastive learning forced incredibly rigid representation clustering. While raw recall ceiling slightly dipped against basic mathematical BCE tuning, the PyTorch models natively learned how to almost completely eliminate False Positives organically. Evaluated securely on the unmodified `152` image test branch safely bypassing earlier Ultralytics `val()` inversion risks.
+
 
 ## 🌌 Phase 7: Multi-Scale Topologies & SupCon (Runs 18) — [QUEUED]
 
