@@ -75,3 +75,14 @@ To maximize the feature separability of our absolute best `YOLO11s` backbone (fr
    - SupCon + Full Pipeline Finetuning
    
 *(Awaiting final results from local GPU cluster)*
+
+## 🌌 Phase 7: Multi-Scale Topologies & SupCon (Runs 18) — [QUEUED]
+
+Extending the mathematical foundations established in Phase 6, we are extracting hierarchical multi-scale feature maps from the core YOLO architecture. 
+The hypothesis strongly dictates that early YOLO layers natively embed fine-grained structural anomalies (e.g. optic disc cup geometries) while failing at global logic, whereas deep layers represent global semantics but compress geometries irreversibly.
+
+1. **Multi-Scale Architecture**: Paralleled extraction across P3 (Block 4 - 256d), P4 (Block 6 - 256d), and P5 (Block 9 - 512d) resulting in an aggregated 1024-dimensional feature topology without the classification bottleneck.
+2. **SupCon Stage**: Identical to Runs17 methodology.
+3. **Finetuning Parameters**: Evaluating Baseline vs Frozen vs Partial Finetune vs Full Finetune on the Multi-Scale outputs.
+
+*(Awaiting final execution. Auto-queued via `nohup` immediately after Phase 6 concludes.)*
