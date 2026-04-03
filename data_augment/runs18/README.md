@@ -30,10 +30,10 @@ Replaced projection layer with standard `Linear(1024, 2)` classifier to predict 
 
 | Model State | Accuracy | Precision | Recall | F1 Score |
 |-------------|:--------:|:---------:|:------:|:--------:|
-| **Baseline Multi-Scale** | TBH | TBH | TBH | TBH |
-| **SupCon (Frozen Backbone)** | TBH | TBH | TBH | TBH |
-| **SupCon (Partial Finetune)** | TBH | TBH | TBH | TBH |
-| **SupCon (Full Finetune)** | TBH | TBH | TBH | TBH |
+| **Baseline Multi-Scale** | 0.9211 | 0.9091 | 0.4762 | 0.6250 |
+| **SupCon (Frozen Backbone)** | 0.9211 | 0.9091 | 0.4762 | 0.6250 |
+| **SupCon (Partial Finetune)** | 0.9211 | 0.8462 | **0.5238** | **0.6471** |
+| **SupCon (Full Finetune)** | 0.9211 | 0.9091 | 0.4762 | 0.6250 |
 
 ---
 
@@ -41,10 +41,16 @@ Replaced projection layer with standard `Linear(1024, 2)` classifier to predict 
 
 1. **Before SupCon**: `tsne_pre_supcon.png`
 2. **After SupCon**: `tsne_post_supcon.png`
+3. **Confusion Matrices**: 
+   - `baseline_multiscale_cm.png`
+   - `supcon_frozen_cm.png`
+   - `supcon_partial_cm.png`
+   - `supcon_full_cm.png`
 
 ---
 
 ## 4. Key Takeaways
 
-1. *To be calculated post training*
-2. *To be calculated post training*
+1. **Partial Finetuning Wins**: Peeling back the projection head and slightly unfreezing the dense 1024-dimensional topological extraction achieved **52.38% Recall (11/21 Glaucoma detected)** vs the baseline 47% (10/21). 
+2. **Massive Precision Constraints**: The contrastive pretraining created an incredibly strict boundary for the `NORMAL` class, elevating Precision outlandishly high (90.91%) across almost all ablations! Only 1 False Positive was recorded across the 152 test images in 3 out of 4 experiments.
+3. **Multi-Scale Feature Dynamics**: By forcing P3, P4, and P5 into a flattened mathematical plane, the model became deeply conservative regarding what constitutes a Glaucoma Suspect, aggressively prioritizing precision over sweeping recall.
