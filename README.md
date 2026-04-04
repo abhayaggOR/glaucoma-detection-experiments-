@@ -108,3 +108,19 @@ The hypothesis strongly dictates that early YOLO layers natively embed fine-grai
 **Conclusion:**
 Multi-Scale Contrastive Learning successfully extracts extreme precision. The aggregated topological hierarchy (P3+P4+P5) generated an incredibly strict boundary for the `NORMAL` class, elevating Precision outlandishly high (90.91%) across almost all ablations! Only 1 False Positive was recorded across the 152 test images. Partial Fine-tuning safely optimized the 1024-dimensional boundary to capture 52.38% (11/21) of Glaucoma cases while preserving elite precision constraints.
 
+
+---
+
+## 🔬 Phase 8: Advanced Scale Fusion Experiments (Runs 19–21) — [IN PROGRESS]
+
+Taking the multi-scale hierarchy established in Phase 7 further, we are evaluating three distinct mechanisms for combining P3/P4/P5 features from the YOLOv11s backbone. All experiments use **cross-space projection fusion** (P3:256→256, P4:256→512, P5:512→1024) before applying attention or weighting, yielding a consistent **1792-d** representation.
+
+| Run | Strategy | Feature Dim | Key Module |
+|-----|----------|:-----------:|------------|
+| **Runs19** | Learnable Scalar Scale Weights (w3, w4, w5) | 1792 | Trainable `nn.Parameter` per-scale scalars |
+| **Runs20** | SE Channel Attention | 1792 | SE block: sigmoid-gated channel recalibration (r=4) |
+| **Runs21** | Cross-Scale Softmax Attention | 512 | Softmax-weighted sum over projected 512-d scales |
+
+All experiments follow the same SupCon pretraining (150 epochs, τ=0.07) and classifier fine-tuning (Baseline / Frozen / Partial / Full), evaluated **only on the 152-image test set**.
+
+*(Results pending — experiments queued sequentially on GPU)*
