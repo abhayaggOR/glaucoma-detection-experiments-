@@ -124,14 +124,14 @@ Taking the multi-scale hierarchy established in Phase 7 further, we are evaluati
 All experiments follow the same SupCon pretraining (150 epochs, τ=0.07) and classifier fine-tuning (Baseline / Frozen / Partial / Full), evaluated **only on the 152-image test set**.
 
 
-### Phase 8 Partial Results (Runs 19 & 20 Complete — Runs 21 pending)
+### Phase 8 Final Results (All Runs Complete)
 
 | Run | Strategy | Best Experiment | Recall | Precision | F1 | Accuracy |
 |-----|----------|-----------------|:------:|:---------:|:--:|:--------:|
 | **Runs19** | Learnable Scale Weights (1792-d) | **SupCon + Partial** | **61.90%** | 76.47% | **68.42%** | 92.11% |
 | **Runs20** | SE Channel Attention (1792-d) | SupCon + Full | 57.14% | 80.00% | 66.67% | 92.11% |
-| **Runs21** | Cross-Scale Softmax Attention (512-d) | *Pending* | — | — | — | — |
+| **Runs21** | Cross-Scale Softmax Attention (512-d) | SupCon + Partial | 57.14% | 75.00% | 64.86% | 91.45% |
 
-> 🏆 **Runs19 SupCon + Partial Finetuning achieved 61.90% Recall (13/21 Glaucoma detected)** — the highest recall in the entire project. Learnable scale weights autonomously prioritized fine-grained P3 features (w3=1.044 > w4=1.010 > w5=0.973).
-
-*(Runs21 results to be appended once training completes)*
+> 🏆 **Runs19 SupCon + Partial Finetuning achieved 61.90% Recall (13/21 Glaucoma detected)** — the highest recall in the entire project. Learnable scale weights (w3=1.044 > w4=1.010 > w5=0.973) autonomously prioritized fine-grained P3 features.
+>
+> 📊 **Key finding**: Runs21's cross-scale softmax attention converged to near-uniform weights (α3≈α4≈α5≈0.333), suggesting all three scales are equally important. Retaining full 1792-d diversity (Runs19/20) outperforms the 512-d weighted-sum collapse (Runs21).
