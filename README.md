@@ -135,3 +135,18 @@ All experiments follow the same SupCon pretraining (150 epochs, τ=0.07) and cla
 > 🏆 **Runs19 SupCon + Partial Finetuning achieved 61.90% Recall (13/21 Glaucoma detected)** — the highest recall in the entire project. Learnable scale weights (w3=1.044 > w4=1.010 > w5=0.973) autonomously prioritized fine-grained P3 features.
 >
 > 📊 **Key finding**: Runs21's cross-scale softmax attention converged to near-uniform weights (α3≈α4≈α5≈0.333), suggesting all three scales are equally important. Retaining full 1792-d diversity (Runs19/20) outperforms the 512-d weighted-sum collapse (Runs21).
+
+---
+
+## 🧬 Phase 9: Normalized Multi-Scale Fusion Experiments (Runs 18.1, 19.2, 20.1, 21.1) — [IN PROGRESS]
+
+Building on Phase 8 findings, Phase 9 addresses the **feature imbalance problem** in raw multi-scale concatenation by applying **L2 normalization independently to P3, P4, P5** before fusion. All experiments use **1024×1024 input resolution**.
+
+| Run | Fix Target | Strategy | Feature Dim | Key Innovation |
+|-----|------------|----------|:-----------:|----------------|
+| **Runs18.1** | Runs18 magnitude imbalance | Plain normalize + concat | 1024 | `F.normalize(p3/p4/p5, dim=1)` before concat |
+| **Runs19.2** | Runs19 + normalization | Normalize + biased learnable weights | 1024 | Init w3=1.2, w4=1.0, w5=0.8 |
+| **Runs20.1** | Runs20 SE overfitting | Lightweight SE + dropout + residual | 1024 | SE(112-d squeeze), Dropout(0.3), residual `h=h+h·SE(h)` |
+| **Runs21.1** | Runs21 softmax constraint | Sigmoid scale attention | 512 | Independent sigmoid gates: `a_i=sigmoid(s_i)` (not sum=1) |
+
+*(Results pending — experiments queued sequentially on GPU after Runs19.1)*
